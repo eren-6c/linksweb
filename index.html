@@ -187,10 +187,11 @@
   startCountdown();
 
   // Visitor counter using CountAPI
-  const counterKey = "erenxiter_page_visitors"; // unique counter name
+  const namespace = "erenxiter.com"; // unique namespace
+  const key = "mainpage"; // key for this page
   async function updateVisitorCount() {
     try {
-      const res = await fetch(`https://api.countapi.xyz/hit/${counterKey}`);
+      const res = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
       const data = await res.json();
       document.getElementById("visitorCount").textContent = data.value;
     } catch (err) {
