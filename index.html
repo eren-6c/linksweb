@@ -187,8 +187,8 @@
   startCountdown();
 
   // Visitor counter using CountAPI
-  const namespace = "erenxiter.com"; // unique namespace
-  const key = "mainpage"; // key for this page
+  const namespace = "erenxiters"; // your workspace/namespace
+  const key = "erenxiters"; // your slug/counter name
   async function updateVisitorCount() {
     try {
       const res = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
