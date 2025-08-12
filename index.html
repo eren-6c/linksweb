@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eren Xiters Link Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#2b0b3a;
+      --bg2:#6a1b9a;
+      --accent:#e040fb;
+      --muted: rgba(255,255,255,0.7);
+      --card-shadow: 0 10px 30px rgba(16,6,25,0.6);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Plus Jakarta Sans',sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    .container{
+      max-width:600px;
+      width:100%;
+      background:rgba(255,255,255,0.05);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:var(--card-shadow);
+      backdrop-filter:blur(8px);
+    }
+    h1{text-align:center;margin-bottom:20px}
+    .platforms{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .platform{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:14px;
+      background:rgba(255,255,255,0.07);
+      border-radius:12px;
+      text-decoration:none;
+      color:inherit;
+      transition:transform .18s ease;
+    }
+    .platform:hover{transform:translateY(-4px)}
+    .plat-icon{
+      width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,0.1);
+      font-weight:bold;font-size:18px;color:var(--accent);
+    }
+    .plat-body h3{margin:0;font-size:16px}
+    .plat-body p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Links For Users</h1>
+    <div class="platforms">
+      <a class="platform" href="https://just2earn.com/DAILYPASS" target="_blank">
+        <div class="plat-icon">💸</div>
+        <div class="plat-body">
+          <h3>Daily User/Pass</h3>
+          <p>This will show ads to Support developer !</p>
+        </div>
+      </a>
+      <a class="platform" href="https://youtu.be/45gI6ltNVH4" target="_blank">
+        <div class="plat-icon">▶️</div>
+        <div class="plat-body">
+          <h3>YouTube</h3>
+          <p>How to get User/Pass ?</p>
+        </div>
+      </a>
+      <a class="platform" href="https://www.mediafire.com/file/gul57vhl9wg3t3f/Window_Modules_Installer.rar/file" target="_blank">
+        <div class="plat-icon">📂</div>
+        <div class="plat-body">
+          <h3>Panel File !</h3>
+          <p>It will auto Update it Self !</p>
+        </div>
+      </a>
+      <a class="platform" href="https://discord.gg/Qb6CWJNdhq" target="_blank">
+        <div class="plat-icon">💬</div>
+        <div class="plat-body">
+          <h3>Discord</h3>
+          <p>Eren Xiters Discord Server</p>
+        </div>
+      </a>
+      <a class="platform" href="https://chat.whatsapp.com/HREZWrlVKUGArnsohpRdss" target="_blank">
+        <div class="plat-icon">📱</div>
+        <div class="plat-body">
+          <h3>WhatsApp</h3>
+          <p>Eren Xiters Whatsapp Group</p>
+        </div>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
