@@ -34,7 +34,18 @@
       box-shadow:var(--card-shadow);
       backdrop-filter:blur(8px);
     }
-    h1{text-align:center;margin-bottom:20px}
+    h1{text-align:center;margin-bottom:6px}
+    .visitor-counter{
+      text-align:center;
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:20px;
+    }
+    .visitor-counter span{
+      color:var(--accent);
+      font-weight:bold;
+      text-shadow:0 0 8px var(--accent);
+    }
     .platforms{
       display:flex;
       flex-direction:column;
@@ -77,6 +88,9 @@
 <body>
   <main class="container">
     <h1>Links For Users</h1>
+    <div class="visitor-counter">
+      👀 Visitors: <span id="visitorCount">Loading...</span>
+    </div>
     <div class="platforms">
       <a class="platform" href="https://just2earn.com/DAILYPASS" target="_blank">
         <div class="plat-icon">💸</div>
@@ -89,7 +103,6 @@
           <span id="dailyTimer">Loading...</span>
         </div>
       </a>
-<!-- New Tile -->
       <a class="platform" href="https://www.youtube.com/watch?v=-XU9GBDwgjI" target="_blank">
         <div class="plat-icon">🎥</div>
         <div class="plat-body">
@@ -129,57 +142,63 @@
   </main>
 
   <script>
-const API_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
+  const API_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
 
-async function fetchTime() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    return new Date(data.utc_datetime);
-  } catch (err) {
-    console.error("Time API error:", err);
-    return new Date(); // fallback
+  async function fetchTime() {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      return new Date(data.utc_datetime);
+    } catch (err) {
+      console.error("Time API error:", err);
+      return new Date(); // fallback
+    }
   }
-}
 
-async function startCountdown() {
-  const timerEl = document.getElementById('dailyTimer');
+  async function startCountdown() {
+    const timerEl = document.getElementById('dailyTimer');
 
-  function getNextMidnightPKT(currentTimeUTC) {
-    // Convert to PKT (UTC+5)
-    let pktTime = new Date(currentTimeUTC.getTime() + 5 * 60 * 60 * 1000);
-
-    // Get next midnight in PKT
-    pktTime.setUTCHours(19, 0, 0, 0); // 19:00 UTC == 00:00 PKT next day
-    if (pktTime <= currentTimeUTC) {
-      pktTime = new Date(pktTime.getTime() + 24 * 60 * 60 * 1000);
+    function getNextMidnightPKT(currentTimeUTC) {
+      let pktTime = new Date(currentTimeUTC.getTime() + 5 * 60 * 60 * 1000);
+      pktTime.setUTCHours(19, 0, 0, 0);
+      if (pktTime <= currentTimeUTC) {
+        pktTime = new Date(pktTime.getTime() + 24 * 60 * 60 * 1000);
+      }
+      return pktTime;
     }
 
-    return pktTime;
+    async function updateTimer() {
+      const nowUTC = await fetchTime();
+      const nextMidnightUTC = getNextMidnightPKT(nowUTC);
+      let diff = nextMidnightUTC - nowUTC;
+      if (diff <= 0) diff = 24 * 60 * 60 * 1000;
+
+      const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+      const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+      const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
+
+      timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
   }
 
-  async function updateTimer() {
-    const nowUTC = await fetchTime();
-    const nextMidnightUTC = getNextMidnightPKT(nowUTC);
-    let diff = nextMidnightUTC - nowUTC;
+  startCountdown();
 
-    if (diff <= 0) diff = 24 * 60 * 60 * 1000; // Reset full day if passed
-
-    const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
-    const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
-    const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
-
-    timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+  // Visitor counter using CountAPI
+  const counterKey = "erenxiter_page_visitors"; // unique counter name
+  async function updateVisitorCount() {
+    try {
+      const res = await fetch(`https://api.countapi.xyz/hit/${counterKey}`);
+      const data = await res.json();
+      document.getElementById("visitorCount").textContent = data.value;
+    } catch (err) {
+      console.error("Visitor counter error:", err);
+      document.getElementById("visitorCount").textContent = "Error";
+    }
   }
-
-  updateTimer();
-  setInterval(updateTimer, 1000);
-}
-
-startCountdown();
-</script>
+  updateVisitorCount();
+  </script>
 </body>
 </html>
-
-
-
