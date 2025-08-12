@@ -81,19 +81,27 @@
       <a class="platform" href="https://just2earn.com/DAILYPASS" target="_blank">
         <div class="plat-icon">💸</div>
         <div class="plat-body">
-          <h3>Daily User/Pass</h3>
-          <p>This will show ads to Support developer !</p>
+          <h3>Today Panel Password</h3>
+          <p>Get Password from this Link Shows Ads First !</p>
         </div>
         <div class="timer">
           <span class="timer-label">Next User/Pass in:</span>
           <span id="dailyTimer">Loading...</span>
         </div>
       </a>
+<!-- New Tile -->
+      <a class="platform" href="https://www.youtube.com/watch?v=-XU9GBDwgjI" target="_blank">
+        <div class="plat-icon">🎥</div>
+        <div class="plat-body">
+          <h3>Latest User Video</h3>
+          <p>Get Username from this Video !</p>
+        </div>
+      </a>
       <a class="platform" href="https://youtu.be/45gI6ltNVH4" target="_blank">
         <div class="plat-icon">▶️</div>
         <div class="plat-body">
-          <h3>YouTube</h3>
-          <p>How to get User/Pass ?</p>
+          <h3>Tutorial how to get User/Pass !</h3>
+          <p>How to get User/Pass from above two Links ?</p>
         </div>
       </a>
       <a class="platform" href="https://just2earn.com/PANELFILEUPDATED" target="_blank">
@@ -121,49 +129,54 @@
   </main>
 
   <script>
-    const API_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
-    const INTERVAL_HOURS = 25; // Every 25 hours same for all users
+const API_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
 
-    async function fetchTime() {
-      try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        return new Date(data.utc_datetime);
-      } catch (err) {
-        console.error("Time API error:", err);
-        return new Date(); // fallback
-      }
+async function fetchTime() {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    return new Date(data.utc_datetime);
+  } catch (err) {
+    console.error("Time API error:", err);
+    return new Date(); // fallback
+  }
+}
+
+async function startCountdown() {
+  const timerEl = document.getElementById('dailyTimer');
+
+  function getNextMidnightPKT(currentTimeUTC) {
+    // Convert to PKT (UTC+5)
+    let pktTime = new Date(currentTimeUTC.getTime() + 5 * 60 * 60 * 1000);
+
+    // Get next midnight in PKT
+    pktTime.setUTCHours(19, 0, 0, 0); // 19:00 UTC == 00:00 PKT next day
+    if (pktTime <= currentTimeUTC) {
+      pktTime = new Date(pktTime.getTime() + 24 * 60 * 60 * 1000);
     }
 
-    async function startCountdown() {
-      const timerEl = document.getElementById('dailyTimer');
+    return pktTime;
+  }
 
-      function getNextReleaseTime(currentTime) {
-        const base = new Date(Date.UTC(2025, 0, 1, 0, 0, 0)); // Fixed starting point
-        let diff = currentTime - base;
-        let loopsPassed = Math.floor(diff / (INTERVAL_HOURS * 3600 * 1000));
-        return new Date(base.getTime() + (loopsPassed + 1) * INTERVAL_HOURS * 3600 * 1000);
-      }
+  async function updateTimer() {
+    const nowUTC = await fetchTime();
+    const nextMidnightUTC = getNextMidnightPKT(nowUTC);
+    let diff = nextMidnightUTC - nowUTC;
 
-      async function updateTimer() {
-        const now = await fetchTime();
-        const nextRelease = getNextReleaseTime(now);
-        let diff = nextRelease - now;
+    if (diff <= 0) diff = 24 * 60 * 60 * 1000; // Reset full day if passed
 
-        if (diff <= 0) diff = INTERVAL_HOURS * 3600 * 1000; // Reset if passed
+    const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+    const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+    const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
 
-        const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
-        const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
-        const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
+    timerEl.textContent = `${hours}:${minutes}:${seconds}`;
+  }
 
-        timerEl.textContent = `${hours}:${minutes}:${seconds}`;
-      }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+}
 
-      updateTimer();
-      setInterval(updateTimer, 1000);
-    }
-
-    startCountdown();
-  </script>
+startCountdown();
+</script>
 </body>
 </html>
