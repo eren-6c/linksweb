@@ -57,9 +57,7 @@
       background:rgba(255,255,255,0.1);
       font-weight:bold;font-size:18px;color:var(--accent);
     }
-    .plat-body{
-      flex:1;
-    }
+    .plat-body{flex:1;}
     .timer{
       font-size:14px;
       color:var(--accent);
@@ -88,7 +86,7 @@
         </div>
         <div class="timer">
           <span class="timer-label">Next User/Pass in:</span>
-          <span id="dailyTimer">26:00:00</span>
+          <span id="dailyTimer">Loading...</span>
         </div>
       </a>
       <a class="platform" href="https://youtu.be/45gI6ltNVH4" target="_blank">
@@ -123,32 +121,49 @@
   </main>
 
   <script>
-    function startCountdown(durationHours) {
+    const API_URL = "https://worldtimeapi.org/api/timezone/Etc/UTC";
+    const INTERVAL_HOURS = 25; // Every 25 hours same for all users
+
+    async function fetchTime() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        return new Date(data.utc_datetime);
+      } catch (err) {
+        console.error("Time API error:", err);
+        return new Date(); // fallback
+      }
+    }
+
+    async function startCountdown() {
       const timerEl = document.getElementById('dailyTimer');
-      let countdown = durationHours * 60 * 60; // seconds
 
-      function updateTimer() {
-        let hours = Math.floor(countdown / 3600);
-        let minutes = Math.floor((countdown % 3600) / 60);
-        let seconds = countdown % 60;
+      function getNextReleaseTime(currentTime) {
+        const base = new Date(Date.UTC(2025, 0, 1, 0, 0, 0)); // Fixed starting point
+        let diff = currentTime - base;
+        let loopsPassed = Math.floor(diff / (INTERVAL_HOURS * 3600 * 1000));
+        return new Date(base.getTime() + (loopsPassed + 1) * INTERVAL_HOURS * 3600 * 1000);
+      }
 
-        timerEl.textContent =
-          String(hours).padStart(2, '0') + ":" +
-          String(minutes).padStart(2, '0') + ":" +
-          String(seconds).padStart(2, '0');
+      async function updateTimer() {
+        const now = await fetchTime();
+        const nextRelease = getNextReleaseTime(now);
+        let diff = nextRelease - now;
 
-        if (countdown > 0) {
-          countdown--;
-        } else {
-          countdown = durationHours * 60 * 60; // reset
-        }
+        if (diff <= 0) diff = INTERVAL_HOURS * 3600 * 1000; // Reset if passed
+
+        const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+        const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
+        const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
+
+        timerEl.textContent = `${hours}:${minutes}:${seconds}`;
       }
 
       updateTimer();
       setInterval(updateTimer, 1000);
     }
 
-    startCountdown(26);
+    startCountdown();
   </script>
 </body>
 </html>
